@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'scoop'
-  s.version     = '0.0.0'
+  s.version     = '0.0.1'
   s.date        = '2012-07-19'
   s.summary     = "Scoop"
   s.description = "Gem to connect to SeedTheLearning's Granary api"

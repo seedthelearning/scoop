@@ -1,12 +1,10 @@
 require 'spec_helper'
 
 describe Scoop do
+  let(:scoop) { Scoop.new("http://foo.com/api/v1/") }
 
   describe "#get_all_seeds" do
-    let(:scoop) { Scoop.new }
-
     context "there are seeds" do
-
       context "there are no donations" do
         let(:stub_response) do
           json_body = [ { :id => 1, :link => "http://foo1.com" },
@@ -111,8 +109,6 @@ describe Scoop do
   end
 
   describe "#get_seed" do
-    let(:scoop) { Scoop.new }
-
     context "seed exists with no donation" do
       let(:stub_response) do
         json_body = {:id => 1, :link => "http://foo.com"}.to_json
@@ -185,7 +181,6 @@ describe Scoop do
   end
 
   describe "#create_seed" do
-    let(:scoop) { Scoop.new }
     let(:stub_response) do
       json_body = {:id => 1, :link => "http://foo.com",
                     donation: { amount_cents: 10000,
@@ -215,7 +210,6 @@ describe Scoop do
   end
 
   describe "#reseed_seed" do
-    let(:scoop) { Scoop.new }
     let(:stub_response) do
       json_body = {:id => 1, :link => "http://foo2.com",
                     donation: { amount_cents: 10000,

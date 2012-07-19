@@ -1,9 +1,14 @@
 class Scoop
+  attr_accessor :default_api_url
   require 'faraday'
   require 'json'
 
   def connect
-    Faraday.new url: @base_api_url
+    Faraday.new url: @default_api_url
+  end
+
+  def initialize(url)
+    @default_api_url = url
   end
 
   def get_seed(seed_id)
@@ -73,9 +78,5 @@ class Scoop
       result = { id: response["id"].to_i, link: response["link"]}
     end
     result
-  end
-
-  def set_server(url)
-    @base_api_url = url
   end
 end
