@@ -20,6 +20,17 @@ class Scoop
     end
   end
 
+  def get_all_seeds
+    response = connect.get "seeds.json"
+    status = response.status
+    response = JSON.parse(response.body)
+    seeds = response.collect do |seed|
+      build_seed_json(seed)
+    end
+    foo = { status: status,
+      seeds: seeds }
+  end
+
   private
 
   def build_seed_json(response)
