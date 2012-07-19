@@ -12,10 +12,27 @@ class Scoop
     response = connect.get "seeds/#{seed_id}.json"
     status = response.status
     response = JSON.parse(response.body)
+
     unless status == 200
       { status: status, error: response["error"]}
     else
-      { status: status, id: response["id"].to_i, link: response["link"]}
+      build_seed_json(response)
     end
+  end
+
+  private
+
+  def build_seed_json(response)
+    if response["donation"]
+      donation = response["donation"]
+      result = { status: 200,
+        id: response["id"].to_i,
+        link: response["link"],
+        donation: { amount_cents: donation["amount_cents"],
+                    payout_cents: donation["payout_cents"] } }
+    else
+      result = { status: 200, id: response["id"].to_i, link: response["link"]}
+    end
+    result
   end
 end
