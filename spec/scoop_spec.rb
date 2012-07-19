@@ -183,4 +183,64 @@ describe Scoop do
       end
     end
   end
+
+  describe "#create_seed" do
+    let(:scoop) { Scoop.new }
+    let(:stub_response) do
+      json_body = {:id => 1, :link => "http://foo.com",
+                    donation: { amount_cents: 10000,
+                                payout_cents: 100} }.to_json
+      double(Faraday::Response, :status => 201, :body => json_body)
+    end
+
+    let(:stub_client) {
+      double('client', :post => stub_response)
+    }
+
+    before(:each) do
+      scoop.stub(:connect).and_return(stub_client)
+    end
+
+    it "returns a 201 created" do
+      scoop.create_seed(10000)[:status].should eq(201)
+    end
+
+    it "returns a json response with a seed and donation" do
+      created_seed = scoop.create_seed(10000)
+      created_seed[:id].should eq(1)
+      created_seed[:link].should eq("http://foo.com")
+      created_seed[:donation][:amount_cents].should eq(10000)
+      created_seed[:donation][:payout_cents].should eq(100)
+    end
+  end
+
+  describe "#reseed_seed" do
+    let(:scoop) { Scoop.new }
+    let(:stub_response) do
+      json_body = {:id => 1, :link => "http://foo2.com",
+                    donation: { amount_cents: 10000,
+                                payout_cents: 100} }.to_json
+      double(Faraday::Response, :status => 201, :body => json_body)
+    end
+
+    let(:stub_client) {
+      double('client', :post => stub_response)
+    }
+
+    before(:each) do
+      scoop.stub(:connect).and_return(stub_client)
+    end
+
+    it "returns a 201 created" do
+      scoop.reseed_seed("http://foo1.com", 10000)[:status].should eq(201)
+    end
+
+    it "returns a json response with a seed and donation" do
+      created_seed = scoop.create_seed(10000)
+      created_seed[:id].should eq(1)
+      created_seed[:link].should eq("http://foo2.com")
+      created_seed[:donation][:amount_cents].should eq(10000)
+      created_seed[:donation][:payout_cents].should eq(100)
+    end
+  end
 end
