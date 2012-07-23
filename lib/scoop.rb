@@ -50,6 +50,14 @@ class Scoop
     build_seed_with_status(response, status)
   end
 
+  def get_tree(seed_id)
+    response = connect.get "trees/#{seed_id}.json"
+    status = response.status
+    response = JSON.parse(response.body)
+    response[:status] = status
+    response
+  end
+
   private
 
   def build_seed_with_status(response, status)
