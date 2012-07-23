@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Scoop do
   let(:scoop) { Scoop.new("http://foo.com/api/v1/") }
+  let(:user_id) { 100 }
 
   describe "#get_all_seeds" do
     context "there are seeds" do
@@ -183,6 +184,7 @@ describe Scoop do
   describe "#create_seed" do
     let(:stub_response) do
       json_body = {:id => 1, :link => "http://foo.com",
+                    :user_id => user_id,
                     donation: { amount_cents: 10000,
                                 payout_cents: 100} }.to_json
       double(Faraday::Response, :status => 201, :body => json_body)
@@ -197,21 +199,23 @@ describe Scoop do
     end
 
     it "returns a 201 created" do
-      scoop.create_seed(10000)[:status].should eq(201)
+      scoop.create_seed(user_id, 10000)[:status].should eq(201)
     end
 
     it "returns a json response with a seed and donation" do
-      created_seed = scoop.create_seed(10000)
+      created_seed = scoop.create_seed(user_id, 10000)
       created_seed[:id].should eq(1)
       created_seed[:link].should eq("http://foo.com")
       created_seed[:donation][:amount_cents].should eq(10000)
       created_seed[:donation][:payout_cents].should eq(100)
+      created_seed[:user_id].should eq(100)
     end
   end
 
   describe "#reseed_seed" do
     let(:stub_response) do
       json_body = {:id => 1, :link => "http://foo2.com",
+                   :user_id => user_id,
                     donation: { amount_cents: 10000,
                                 payout_cents: 100} }.to_json
       double(Faraday::Response, :status => 201, :body => json_body)
@@ -226,15 +230,16 @@ describe Scoop do
     end
 
     it "returns a 201 created" do
-      scoop.reseed_seed("http://foo1.com", 10000)[:status].should eq(201)
+      scoop.reseed_seed(user_id, "http://foo1.com", 10000)[:status].should eq(201)
     end
 
     it "returns a json response with a seed and donation" do
-      created_seed = scoop.create_seed(10000)
+      created_seed = scoop.create_seed(user_id, 10000)
       created_seed[:id].should eq(1)
       created_seed[:link].should eq("http://foo2.com")
       created_seed[:donation][:amount_cents].should eq(10000)
       created_seed[:donation][:payout_cents].should eq(100)
+      created_seed[:user_id].should eq(100)
     end
   end
 end
