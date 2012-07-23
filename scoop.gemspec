@@ -9,4 +9,6 @@ Gem::Specification.new do |s|
   s.files       = ["lib/scoop.rb"]
   s.homepage    =
     'http://github.com/seedthelearning/scoop'
+
+  s.add_runtime_dependency 'faraday'
 end
