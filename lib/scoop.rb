@@ -11,6 +11,15 @@ class Scoop
     @default_api_url = url
   end
 
+  def create_participant(user_id, link)
+    participant = { user_id: user_id, link: link }
+    response = connect.post "participants.json", participant
+    status = response.status
+    response = JSON.parse(response.body)
+
+    result = { status: status, participant: response }
+  end
+
   def get_seed(seed_id)
     response = connect.get "seeds/#{seed_id}.json"
     status = response.status

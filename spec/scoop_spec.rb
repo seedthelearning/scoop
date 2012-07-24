@@ -242,4 +242,29 @@ describe Scoop do
       created_seed[:user_id].should eq(100)
     end
   end
+
+  describe "#create_participant" do
+    let(:stub_response) do
+      json_body = { link: "http://foo1.com", user_id: 111 }.to_json
+      double(Faraday::Response, :status => 201, :body => json_body)
+    end
+
+    let(:stub_client) {
+      double('client', :post => stub_response)
+    }
+
+    before(:each) do
+      scoop.stub(:connect).and_return(stub_client)
+    end
+
+    it "returns a status 201 created" do
+      scoop.create_participant(user_id, "http://foo1.com")[:status].should eq(201)
+    end
+
+    it "creates a participant" do
+      participant = scoop.create_participant(111, "http://foo1.com")
+      participant[:participant]["link"].should eq("http://foo1.com")
+      participant[:participant]["user_id"].should eq(111)
+    end
+  end
 end
