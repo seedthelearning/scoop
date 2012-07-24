@@ -76,10 +76,11 @@ class Scoop
         id: response["id"].to_i,
         user_id: response["user_id"].to_i,
         link: response["link"],
+        participants: response["child_count"],
         donation: { amount_cents: donation["amount_cents"],
                     payout_cents: donation["payout_cents"],
-                    total_donated: response["total_donated"] } },
-        participants: response["child_count"]
+                    total_donated: response["total_donated"] } }
+        
     else
       result = { status: status, id: response["id"].to_i, link: response["link"]}
     end
